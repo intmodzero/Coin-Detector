@@ -27,11 +27,15 @@ count = 0
 
 #draw circles
 for circle in bounding_circles:
-    #area = cv2.contourArea(circle)
+    area = cv2.contourArea(circle)
 
+    if 10000 < area and area < 40000:
+        count += 1
+ 
     ellipse = cv2.fitEllipse(circle)
     cv2.ellipse(colored_img, ellipse, (0,0,255),3)
 
+print("# of coins: " + str(count))
 #cv2.imshow("canny edged image",close_circle)
 
 cv2.imshow('original', canny_img)
