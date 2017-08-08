@@ -1,8 +1,19 @@
+#!/usr/bin/python
+
 import cv2
 import numpy as np
+import sys
+from time import sleep
 from matplotlib import pyplot
 
-img = cv2.imread('imgs/01.jpg',0)
+# device /dev/video1
+device = 0
+
+#img = cv2.imread('imgs/01.jpg',0)
+
+def getCapture(device):
+    video_capture = cv2.VideoCapture(device)
+    return video_capture
 
 def processImage(img):
     # blur to reduce noise
@@ -26,7 +37,7 @@ def boundingCircle(canny_img):
 
 
     # convert back to color
-    colored_img = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR) 
+    colored_img = cv2.cvtColor(canny_img,cv2.COLOR_GRAY2BGR) 
 
     return bounding_circles, colored_img
 
@@ -45,17 +56,32 @@ def detectCoins(bounding_circles, colored_img):
 
     print("# of coins: " + str(count))
 
-def display(canny_img, colored_img):
-    cv2.imshow('original', canny_img)
-    cv2.waitKey(0)
-    cv2.imshow('draw bounding circles on coins', colored_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
 
-def main():
-    canny_img = processImage(img)
-    bounding_circles, colored_img = boundingCircle(canny_img)
-    detectCoins(bounding_circles, colored_img)
-    display(canny_img, colored_img)
+#def display(canny_img, colored_img):
+ #   cv2.imshow('original', canny_img)
+  #  cv2.waitKey(0)
+   # cv2.imshow('draw bounding circles on coins', colored_img)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+
+def display(frame):
+    cv2.imshow('camera', frame)
+
+def main():    
+    camera_feed = getCapture(device)
+
+    while 1:
+        ret, frame = camera_feed.read()
+        canny_img = processImage(frame)
+        bounding_circles, colored_img = boundingCircle(canny_img)
+        #detectCoins(bounding_circles, colored_img)
+        if ret == True:
+            #display(frame)
+            display(canny_img)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    video_capture.release()
+    cv2.destroyAllWindows()
 
 main() 
