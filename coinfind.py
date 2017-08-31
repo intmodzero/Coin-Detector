@@ -30,17 +30,13 @@ def boundingCircle(canny_img):
     # fill bounds
     bounding_img = close_circle.copy()
 
-    bounding_circles, hierarchy = cv2.findContours(bounding_img, cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_SIMPLE)
+    image, bounding_circles, hierarchy = cv2.findContours(bounding_img, cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_NONE)
+
+    return bounding_circles, image
 
 
-    # convert back to color
-    colored_img = cv2.cvtColor(canny_img,cv2.COLOR_GRAY2BGR) 
-
-    return bounding_circles, colored_img
-
-
-def detectCoins(bounding_circles, colored_img):
+def detectCoins(bounding_circles, display_img):
     
     count = 0
     for circle in bounding_circles:
@@ -50,7 +46,7 @@ def detectCoins(bounding_circles, colored_img):
             count += 1
  
         ellipse = cv2.fitEllipse(circle)
-        cv2.ellipse(colored_img, ellipse, (0,0,255),3)
+        cv2.ellipse(display_img, ellipse, (0,0,255),3)
 
     print("# of coins: " + str(count))
 
@@ -64,10 +60,9 @@ def main():
         ret, frame = camera_feed.read()
         canny_img = processImage(frame)
         bounding_circles, colored_img = boundingCircle(canny_img)
-        #detectCoins(bounding_circles, colored_img)
+        detectCoins(bounding_circles, frame)
         if ret == True:
-            #display(frame)
-            display(canny_img)
+            display(frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
