@@ -9,8 +9,6 @@ from matplotlib import pyplot
 # device /dev/video1
 device = 0
 
-#img = cv2.imread('imgs/01.jpg',0)
-
 def getCapture(device):
     video_capture = cv2.VideoCapture(device)
     return video_capture
@@ -55,14 +53,6 @@ def detectCoins(bounding_circles, colored_img):
         cv2.ellipse(colored_img, ellipse, (0,0,255),3)
 
     print("# of coins: " + str(count))
-
-
-#def display(canny_img, colored_img):
- #   cv2.imshow('original', canny_img)
-  #  cv2.waitKey(0)
-   # cv2.imshow('draw bounding circles on coins', colored_img)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
 
 def display(frame):
     cv2.imshow('camera', frame)
